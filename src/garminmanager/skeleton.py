@@ -19,8 +19,11 @@ Note: This skeleton file can be safely removed if not needed! Ok
 import argparse
 import sys
 import logging
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from garminmanager import __version__
+import ui.Version_auto
+import ui.MainGui
 
 __author__ = "schrma"
 __copyright__ = "schrma"
@@ -104,6 +107,26 @@ def main(args):
     _logger.debug("Starting crazy calculations...")
     print("The {}-th Fibonacci number is {}".format(args.n, fib(args.n)))
     _logger.info("Script ends here")
+    app = QtWidgets.QApplication(sys.argv)
+    # main_window = QtWidgets.QDialog()
+    MainWindow = QtWidgets.QMainWindow()
+    Dialog = QtWidgets.QDialog()
+    DialogInterface = ui.Version_auto.Ui_Dialog()
+    DialogInterface.setupUi(Dialog)
+    gui = ui.MainGui.MainWindow(Dialog, DialogInterface)
+    gui.setupUi(MainWindow)
+    gui.register_signals(MainWindow)
+    gui.PrepareApplication()
+    # myDialog = QtWidgets.QDialog()
+    # di = ui.Version_auto.Ui_Dialog()
+    # di.setupUi(myDialog)
+    # myDialog.show()
+    # sys.exit(di.exec_())
+
+    # controller = controllers.applicationcontroller.ApplicationController(ui, data_model)
+
+    MainWindow.show()
+    sys.exit(app.exec_())
 
 
 def run():
