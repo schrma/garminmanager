@@ -13,7 +13,7 @@ inside your current environment.
 Besides console scripts, the header (i.e. until _logger...) of this file can
 also be used as template for Python modules.
 
-Note: This skeleton file can be safely removed if not needed!
+Note: This skeleton file can be safely removed if not needed! Ok
 """
 
 import argparse
