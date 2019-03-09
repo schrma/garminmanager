@@ -1,4 +1,4 @@
-from ui.MainGui_auto import *
+from garminmanager.ui.MainGui_auto import *
 import os
 import time
 from os import listdir
@@ -84,6 +84,51 @@ class MainWindow(Ui_MainWindow):
 
     def register_callback_on_submit(self, call_back):
         self._on_submit_callback = call_back
+
+    def TransferToDatabase(self):
+        fileHandler = FileHandlerC()
+
+        # Move activities
+        fileHandler.SetSrcFolder(self._settings["FitSourceFolder"] + "/ACTIVITY")
+        fileHandler.SetDstFolder(self._settings["FitDstFolder"] + "/GarminWatch/MyActivities")
+        fileHandler.Move()
+
+        # Copy monitor data
+        fileHandler.SetSrcFolder(self._settings["FitSourceFolder"] + "/ACTIVITY")
+        fileHandler.SetDstFolder(self._settings["FitDstFolder"] + "/GarminWatch/Monitor")
+        fileHandler.Copy()
+        fileList = fileHandler.GetFileList()
+
+        # ParseData
+        fitParser = FitParserC()
+        fitParser.SetFileList(fileList)
+        for itemType in listOfTypes:
+            fitParser.SetType(itemType)
+            rawData = fitParser.GetData()
+            dataFilter = DataFilterC(rawData)
+            filterDataArray = dataFilter.GetData()
+            fileWriter = FileWriter(filterDataArray,itemType)
+            fileWriter.SetOutputPath(jsonFolder)
+            fileWriter.SetIntervallInHour(24)
+            # Write last and first data as Name
+            # Write Version number
+            # Write Start
+            fileWriter.Write()
+
+    def ProcessHeartrate(self):
+        generateData = GenerateData()
+        generatorSettings = GeneratorSettingsC()
+        generatorSettings.SetStartDateTime(startDateTime)
+        generatorSettings.SetEndDateTime(startDateTime)
+        generatorSettings.SetInput(inputFolder)
+        generateData.SetSettings(generatorSettings)
+        generateData.Process()
+        fitnessData = generateData.GetData()
+        statisticCalc = StatisticC(fitnessData)
+        statisticCalc.Calculate()
+        statisticData = statisticCalc.GetData()
+        plotData = PlotC(plotSettings,statisticData)
+        plotData.Plot()
 
     def TestFunction(self):
         self._Dialog.show()

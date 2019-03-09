@@ -2,7 +2,7 @@
 [run]
 branch = True
 source = garminmanager
-omit = venv
+omit = venv,src/garminmanager/ui/MainGui_auto.py,src/garminmanager/ui/Version_auto.py,src/garminmanager/skeleton.py,src/garminmanager/skeleton.py,src/garminmanager/ui/MainGui.py,src\garminmanager\__init__.py
 
 [paths]
 source =

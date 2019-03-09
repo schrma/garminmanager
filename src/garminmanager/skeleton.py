@@ -22,8 +22,11 @@ import logging
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from garminmanager import __version__
-import ui.Version_auto
-import ui.MainGui
+import garminmanager.FitParserC
+import garminmanager.ui
+import garminmanager.ui.Version_auto
+import garminmanager.ui.MainGui
+import garminmanager.utils.FileManagerC
 
 __author__ = "schrma"
 __copyright__ = "schrma"
@@ -58,16 +61,11 @@ def parse_args(args):
       :obj:`argparse.Namespace`: command line parameters namespace
     """
     parser = argparse.ArgumentParser(
-        description="Just a Fibonnaci demonstration")
+        description="Heatlt viewer for garmin users")
     parser.add_argument(
         '--version',
         action='version',
         version='garminmanager {ver}'.format(ver=__version__))
-    parser.add_argument(
-        dest="n",
-        help="n-th Fibonacci number",
-        type=int,
-        metavar="INT")
     parser.add_argument(
         '-v',
         '--verbose',
@@ -91,9 +89,8 @@ def setup_logging(loglevel):
     Args:
       loglevel (int): minimum loglevel for emitting messages
     """
-    logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    logging.basicConfig(level=loglevel, stream=sys.stdout,
-                        format=logformat, datefmt="%Y-%m-%d %H:%M:%S")
+    logformat = "[%(asctime)s] %(levelname)s:%(name)s->%(message)s"
+    logging.basicConfig(level=loglevel, stream=sys.stdout,format=logformat, datefmt="%Y-%m-%d %H:%M:%S")
 
 
 def main(args):
@@ -103,28 +100,22 @@ def main(args):
       args ([str]): command line parameter list
     """
     args = parse_args(args)
-    setup_logging(args.loglevel)
-    _logger.debug("Starting crazy calculations...")
-    print("The {}-th Fibonacci number is {}".format(args.n, fib(args.n)))
-    _logger.info("Script ends here")
+
+    myLevel = args.loglevel
+    setup_logging(logging.WARNING)
+
+    f = garminmanager.utils.FileManagerC.FilemMangerC(myLevel)
+    m = garminmanager.FitParserC.FitParserC(myLevel)
+
     app = QtWidgets.QApplication(sys.argv)
-    # main_window = QtWidgets.QDialog()
     MainWindow = QtWidgets.QMainWindow()
     Dialog = QtWidgets.QDialog()
-    DialogInterface = ui.Version_auto.Ui_Dialog()
+    DialogInterface = garminmanager.ui.Version_auto.Ui_Dialog()
     DialogInterface.setupUi(Dialog)
-    gui = ui.MainGui.MainWindow(Dialog, DialogInterface)
+    gui = garminmanager.ui.MainGui.MainWindow(Dialog, DialogInterface)
     gui.setupUi(MainWindow)
     gui.register_signals(MainWindow)
     gui.PrepareApplication()
-    # myDialog = QtWidgets.QDialog()
-    # di = ui.Version_auto.Ui_Dialog()
-    # di.setupUi(myDialog)
-    # myDialog.show()
-    # sys.exit(di.exec_())
-
-    # controller = controllers.applicationcontroller.ApplicationController(ui, data_model)
-
     MainWindow.show()
     sys.exit(app.exec_())
 
