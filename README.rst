@@ -3,13 +3,13 @@ garminmanager
 =============
 
 
-Add a short description here!
+This SW reads out a garmin watch and processes the healt data
 
 
 Description
 ===========
 
-A longer description of your project goes here...
+Under construction
 
 
 Note
