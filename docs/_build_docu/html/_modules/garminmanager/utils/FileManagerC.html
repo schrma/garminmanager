@@ -1,0 +1,218 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>garminmanager.utils.FileManagerC &#8212; garminmanager 0.0.post0.dev5+g199f32c.dirty documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for garminmanager.utils.FileManagerC</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FilemManagerC"><a class="viewcode-back" href="../../../api/garminmanager.utils.html#garminmanager.utils.FileManagerC.FilemManagerC">[docs]</a><span class="k">class</span> <span class="nc">FilemManagerC</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A Class to manage files</span>
+
+<span class="sd">    The classe handles differnt **file** operations</span>
+
+<span class="sd">    - **BulletpointBold1**, BulletpointNormal1</span>
+
+<span class="sd">      which appears as follow:</span>
+
+<span class="sd">    - **BulletpointBold1**, BulletpointNormal1</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        Some notes</span>
+<span class="sd">            * Some bulletpoints</span>
+<span class="sd">            * Another bulletpoint</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        Another note</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_src</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dst</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_with_subfolder</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">loglevel</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Init: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+<div class="viewcode-block" id="FilemManagerC.set_src_folder"><a class="viewcode-back" href="../../../api/garminmanager.utils.html#garminmanager.utils.FileManagerC.FilemManagerC.set_src_folder">[docs]</a>    <span class="k">def</span> <span class="nf">set_src_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">foldername</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set source path</span>
+
+<span class="sd">        It just sets the source path</span>
+
+<span class="sd">            * Bulletpoint1</span>
+<span class="sd">            * Bulletpoint2</span>
+
+<span class="sd">        **Title Test**:</span>
+
+<span class="sd">        Test</span>
+
+<span class="sd">        :param foldername: input folder</span>
+<span class="sd">        :type foldername: string</span>
+<span class="sd">        :returns: nothing</span>
+<span class="sd">        :rtype: None</span>
+
+<span class="sd">        :Example:</span>
+
+<span class="sd">        &gt;&gt;&gt; a = [10]</span>
+<span class="sd">        &gt;&gt;&gt; print(a)</span>
+<span class="sd">        [10]</span>
+
+<span class="sd">        .. note:: What to say here</span>
+<span class="sd">        .. seealso:: :class:`FitParserC`</span>
+<span class="sd">        .. warning:: my must be non-zero.</span>
+<span class="sd">        .. todo:: check that arg2 is non zero.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_src</span> <span class="o">=</span> <span class="n">foldername</span></div>
+
+<div class="viewcode-block" id="FilemManagerC.set_dst_folder"><a class="viewcode-back" href="../../../api/garminmanager.utils.html#garminmanager.utils.FileManagerC.FilemManagerC.set_dst_folder">[docs]</a>    <span class="k">def</span> <span class="nf">set_dst_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">foldername</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dst</span> <span class="o">=</span> <span class="n">foldername</span></div>
+
+<div class="viewcode-block" id="FilemManagerC.move"><a class="viewcode-back" href="../../../api/garminmanager.utils.html#garminmanager.utils.FileManagerC.FilemManagerC.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_move_or_copy</span><span class="p">(</span><span class="s1">&#39;move&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilemManagerC.copy"><a class="viewcode-back" href="../../../api/garminmanager.utils.html#garminmanager.utils.FileManagerC.FilemManagerC.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_move_or_copy</span><span class="p">(</span><span class="s1">&#39;copy&#39;</span><span class="p">)</span></div>
+
+    <span class="c1"># noinspection PyTypeChecker</span>
+    <span class="k">def</span> <span class="nf">_move_or_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s1">&#39;copy&#39;</span><span class="p">):</span>
+        <span class="n">root_src_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_src</span>
+        <span class="n">root_target_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dst</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">src_dir</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">root_src_dir</span><span class="p">):</span>
+            <span class="n">dst_dir</span> <span class="o">=</span> <span class="n">src_dir</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">root_src_dir</span><span class="p">,</span> <span class="n">root_target_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">file_</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">src_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="n">file_</span><span class="p">)</span>
+                <span class="n">dst_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">file_</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dst_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst_file</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">dst_file</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">operation</span> <span class="ow">is</span> <span class="s1">&#39;copy&#39;</span><span class="p">:</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">src_file</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">src_file</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FilemManagerC.folder_are_ok"><a class="viewcode-back" href="../../../api/garminmanager.utils.html#garminmanager.utils.FileManagerC.FilemManagerC.folder_are_ok">[docs]</a>    <span class="k">def</span> <span class="nf">folder_are_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_src</span> <span class="o">==</span> <span class="p">[]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dst</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="FilemManagerC.create_folder"><a class="viewcode-back" href="../../../api/garminmanager.utils.html#garminmanager.utils.FileManagerC.FilemManagerC.create_folder">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_folder</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilemManagerC.get_file_list"><a class="viewcode-back" href="../../../api/garminmanager.utils.html#garminmanager.utils.FileManagerC.FilemManagerC.get_file_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_file_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_list</span></div>
+
+<div class="viewcode-block" id="FilemManagerC.print_file_list"><a class="viewcode-back" href="../../../api/garminmanager.utils.html#garminmanager.utils.FileManagerC.FilemManagerC.print_file_list">[docs]</a>    <span class="k">def</span> <span class="nf">print_file_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_list</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">garminmanager</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">Module Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, schrma.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

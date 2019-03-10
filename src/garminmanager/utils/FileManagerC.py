@@ -6,6 +6,24 @@ _logger = logging.getLogger(__name__)
 
 
 class FilemManagerC:
+    """A Class to manage files
+
+    The classe handles differnt **file** operations
+
+    - **BulletpointBold1**, BulletpointNormal1
+
+      which appears as follow:
+
+    - **BulletpointBold1**, BulletpointNormal1
+
+    .. note::
+        Some notes
+            * Some bulletpoints
+            * Another bulletpoint
+    .. note::
+        Another note
+
+    """
 
     def __init__(self, loglevel=logging.INFO):
         self._src = []
@@ -16,6 +34,33 @@ class FilemManagerC:
         _logger.debug("Init: %s", os.path.basename(__file__))
 
     def set_src_folder(self, foldername):
+        """Set source path
+
+        It just sets the source path
+
+            * Bulletpoint1
+            * Bulletpoint2
+
+        **Title Test**:
+
+        Test
+
+        :param foldername: input folder
+        :type foldername: string
+        :returns: nothing
+        :rtype: None
+
+        :Example:
+
+        >>> a = [10]
+        >>> print(a)
+        [10]
+
+        .. note:: What to say here
+        .. seealso:: :class:`FitParserC`
+        .. warning:: my must be non-zero.
+        .. todo:: check that arg2 is non zero.
+        """
         self._src = foldername
 
     def set_dst_folder(self, foldername):

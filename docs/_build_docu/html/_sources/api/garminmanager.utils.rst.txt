@@ -1,0 +1,22 @@
+garminmanager.utils package
+===========================
+
+Submodules
+----------
+
+garminmanager.utils.FileManagerC module
+---------------------------------------
+
+.. automodule:: garminmanager.utils.FileManagerC
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: garminmanager.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:

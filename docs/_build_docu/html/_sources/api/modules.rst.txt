@@ -1,0 +1,7 @@
+garminmanager
+=============
+
+.. toctree::
+   :maxdepth: 4
+
+   garminmanager
