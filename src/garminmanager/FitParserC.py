@@ -7,8 +7,6 @@ import datetime
 
 from fitparse import FitFile
 
-from dateutil import tz
-
 from garminmanager.enumerators.EnumHealthTypeC import EnumHealtTypeC
 import garminmanager.RawDataC
 
@@ -39,7 +37,6 @@ class FitParserC:
                           EnumHealtTypeC.intensity: self._process_intensity,
                           }
 
-        my_type = EnumHealtTypeC.heartrate
         my_type = self._process_type
         # switch_options = {1 : self.printB,
         #     2 : self.printA,
