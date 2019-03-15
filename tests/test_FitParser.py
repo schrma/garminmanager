@@ -16,15 +16,15 @@ def test_process_hearrate():
     fit_parser.process()
     result = fit_parser.get_data()
     # with open("test.txt", "wb") as fp:  # Pickling
-    #     pickle.dump(result, fp)
+    #      pickle.dump(result, fp)
     with open("./tests/samples/result_test_process_hearrate_pickle.txt", "rb") as fp:  # Unpickling
         org_data = pickle.load(fp)
 
-    result.data_array[np.isnan(result.data_array)] = -100
-    org_data.data_array[np.isnan(org_data.data_array)] = -100
-    #org_data.data_array[10] = 10
-    assert (result.data_array == org_data.data_array).all()
-    assert (result.timestamp_array == org_data.timestamp_array).all()
+    result.y_array[np.isnan(result.y_array)] = -100
+    org_data.y_array[np.isnan(org_data.y_array)] = -100
+    #org_data.y_array[10] = 10
+    assert (result.y_array == org_data.y_array).all()
+    assert (result.x_array == org_data.x_array).all()
     print("ok")
 
 def cmp(a, b):

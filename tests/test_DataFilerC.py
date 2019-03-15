@@ -28,8 +28,8 @@ def test_process():
                 datetime.datetime(2019,4,12,10,00) : 107}
 
     for key, value in my_dates.items():
-        raw_data.add_timestamp(key)
-        raw_data.add_data(value)
+        raw_data.add_x(key)
+        raw_data.add_y(value)
 
     datafilter.set_data(raw_data)
     datafilter.set_time_range_in_hour(24)

@@ -93,27 +93,27 @@ class FitParserC:
                             b_is_first_timestamp = False
                     elif record_data.name == my_pattern_y:
                         if record_data.value < 40:
-                            self._raw_data.add_data(np.nan)
+                            self._raw_data.add_y(np.nan)
                         else:
-                            self._raw_data.add_data(record_data.value)
+                            self._raw_data.add_y(record_data.value)
                         save_i = i
                     elif (record_data.name == my_pattern_x) and (i == save_i + 1):
                         if record_data.value > last_timestamp_16:
                             if b_is_first_timestamp_16:
                                 x_time = timestamp_base + datetime.timedelta(seconds=self._gmt_value_in_seconds)
-                                self._raw_data.add_timestamp(x_time)
+                                self._raw_data.add_x(x_time)
                                 first_timestamp_16 = record_data.value
                                 b_is_first_timestamp_16 = False
                             else:
                                 x_time = timestamp_base + datetime.timedelta(
                                     seconds=record_data.value - first_timestamp_16 + self._gmt_value_in_seconds)
-                                self._raw_data.add_timestamp(x_time)
+                                self._raw_data.add_x(x_time)
                             last_timestamp_16 = record_data.value
                         else:
                             x_time = timestamp_base + datetime.timedelta(
                                 seconds=record_data.value + pow(2,
                                                                 16) - first_timestamp_16 + self._gmt_value_in_seconds)
-                            self._raw_data.add_timestamp(x_time)
+                            self._raw_data.add_x(x_time)
                             last_timestamp_16 = record_data.value + pow(2, 16)
                     i = i + 1
         except:

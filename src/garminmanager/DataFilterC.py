@@ -26,7 +26,7 @@ class DataFilerC:
         self._time_range_hour = my_range
 
     def process(self):
-        first_date = self._raw_data.timestamp_array[0]
+        first_date = self._raw_data.x_array[0]
         my_range = self._time_range_hour
 
         start_point = self._get_starting_day(first_date)
