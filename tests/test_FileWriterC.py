@@ -44,8 +44,8 @@ def test_write():
 
     file_writer = garminmanager.utils.FileWriterC.FileWriterC()
     file_writer.set_data(my_raw_data_array)
+    file_writer.set_folder("./writerTest")
     file_writer.write()
 
-    file_writer.read()
 
 

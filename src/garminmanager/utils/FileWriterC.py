@@ -3,6 +3,7 @@ import os
 import json
 
 import garminmanager.RawDataC
+import garminmanager.utils.JsonEncDecC
 
 _logger = logging.getLogger(__name__)
 
@@ -14,6 +15,7 @@ class FileWriterC:
         _logger.debug("Init: %s", os.path.basename(__file__))
         self._raw_data_array = []
         self._text = []
+        self._folder = []
 
     def set_data(self,data):
         self._raw_data_array = data
@@ -21,8 +23,26 @@ class FileWriterC:
     def set_filename(self,name):
         self._full_filename = name
 
+    def set_folder(self,folder):
+        self._folder = folder
+
     def set_text(self,text):
         self._text = text
+
+    def write(self):
+
+        for raw_data in self._raw_data_array:
+            if raw_data.x_array == [] or raw_data.y_array == [] or raw_data._process_type:
+                _logger.error("Rawdata is empty")
+                return
+            json_enc_dec = garminmanager.utils.JsonEncDecC.JsonEncDecC()
+            json_enc_dec.set_input_data(raw_data)
+            json_string = json_enc_dec.encode()
+            filename = self._folder + "/" + str(raw_data.x_array[0]).replace(" ", "_") + str(raw_data.x_array[-1]).replace(" ", "_") + ".json"
+            filename = filename.replace(":","-")
+            self._full_filename = filename
+            self.set_text(json_string)
+            self.write_text_to_file()
 
     def write_text_to_file(self):
         fp = open(self._full_filename,"w")

@@ -36,6 +36,10 @@ class JsonEncDecC:
 
         data = self._input_data
 
+        if data.x_array == [] or data.y_array == [] or data._process_type:
+            _logger.error("Rawdata is empty")
+            return ""
+
         json_string = "{\n"
         json_string += self.add_spaces(2) + "\"Version\" : \"" + self._sw_version + "\",\n"
 
