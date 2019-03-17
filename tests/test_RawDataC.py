@@ -23,7 +23,9 @@ def test_compare_datetime():
 
     assert raw_data1 == raw_data2
 
-    raw_data1.x_array[0] = datetime.datetime(2019, 4, 11, 23, 00)
+    x = raw_data1.get_x()
+
+    x[0] = datetime.datetime(2019, 4, 11, 23, 00)
 
     assert (raw_data1 == raw_data2) == False
 

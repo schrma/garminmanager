@@ -113,8 +113,6 @@ class FilemManagerC:
         for item in file_list:
             self._file_list.append(mypath + "/" + item)
 
-        print("hello")
-
     def get_file_list(self):
         return self._file_list
 

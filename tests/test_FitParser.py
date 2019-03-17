@@ -15,17 +15,24 @@ def test_process_hearrate():
     fit_parser.set_type(EnumHealtTypeC.heartrate)
     fit_parser.process()
     result = fit_parser.get_data()
-    # with open("test.txt", "wb") as fp:  # Pickling
-    #      pickle.dump(result, fp)
+    with open("test.txt", "wb") as fp:  # Pickling
+         pickle.dump(result, fp)
     with open("./tests/samples/result_test_process_hearrate_pickle.txt", "rb") as fp:  # Unpickling
         org_data = pickle.load(fp)
 
-    result.y_array[np.isnan(result.y_array)] = -100
-    org_data.y_array[np.isnan(org_data.y_array)] = -100
+
+    x = result.get_x()
+    y = result.get_y()
+
+    org_x = org_data.get_x()
+    org_y = org_data.get_y()
+
+    y[np.isnan(y)] = -100
+    org_y[np.isnan(org_y)] = -100
     #org_data.y_array[10] = 10
-    assert (result.y_array == org_data.y_array).all()
-    assert (result.x_array == org_data.x_array).all()
-    print("ok")
+
+    assert (y == org_y).all()
+    assert (x == org_x).all()
 
 def cmp(a, b):
     return (a > b) - (a < b)

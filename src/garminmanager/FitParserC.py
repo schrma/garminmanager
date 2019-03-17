@@ -61,6 +61,7 @@ class FitParserC:
             _logger.error("Filelist is empty")
             return
         self._raw_data.clear_data()
+        self._raw_data.set_data_type(EnumHealtTypeC.heartrate)
         self.set_type(EnumHealtTypeC.heartrate)
         for filename in filename_list:
             self._process_hearrate_single_file(filename)

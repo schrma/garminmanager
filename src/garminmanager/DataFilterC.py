@@ -47,6 +47,7 @@ class DataFilerC:
             else:
                 temp_raw_dataArray = np.append(temp_raw_dataArray,temp_raw_data)
                 temp_raw_data = garminmanager.RawDataC.RawDataC()
+                temp_raw_data.set_data_type(self._raw_data.get_data_type())
                 temp_raw_data.add_xy(item.x, item.y)
                 _logger.info("--------------------------" + str(end_point))
                 end_point = end_point + datetime.timedelta(hours=my_range)

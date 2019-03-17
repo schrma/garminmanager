@@ -17,8 +17,8 @@ class RawDataC(object):
     def __init__(self,loglevel=logging.INFO):
         _logger.setLevel(loglevel)
         _logger.debug("Init: %s", os.path.basename(__file__))
-        self.x_array = []
-        self.y_array = []
+        self._x_array = []
+        self._y_array = []
         self._process_type = []
         self._xy_array = []
         self._b_class_is_updated = True
@@ -27,8 +27,8 @@ class RawDataC(object):
     def clear_data(self):
         self._b_class_is_updated = True
         self._b_array_is_updated = True
-        self.x_array = []
-        self.y_array = []
+        self._x_array = []
+        self._y_array = []
         self._xy_array = []
 
     def set_data_type(self,my_type):
@@ -40,14 +40,14 @@ class RawDataC(object):
     def add_x(self, x):
         self._b_class_is_updated = False
         self._update_array_data()
-        a = self.x_array
-        self.x_array = np.append(a, x)
+        a = self._x_array
+        self._x_array = np.append(a, x)
 
     def add_y(self, y):
         self._b_class_is_updated = False
         self._update_array_data()
-        a = self.y_array
-        self.y_array = np.append(a, y)
+        a = self._y_array
+        self._y_array = np.append(a, y)
 
     def add_xy(self,x,y):
         self._b_array_is_updated = False
@@ -61,24 +61,23 @@ class RawDataC(object):
 
     def get_x(self):
         self._update_array_data()
-        return self.x_array
+        return self._x_array
 
     def get_y(self):
         self._update_array_data()
-        return self.y_array
+        return self._y_array
 
     def _update_class_data(self):
-        _logger.info("Update class")
         if not self._b_class_is_updated:
+            _logger.info("Update class")
             r = []
             i = 0
-            for x in self.x_array:
+            for x in self._x_array:
                 try:
                     m = xyC()
                     m.x = x
-                    m.y = self.y_array[i]
+                    m.y = self._y_array[i]
                     r = np.append(r, m)
-                    print(str(x) + ": " + str(self.y_array[i]))
                     i = i + 1
                 except IndexError:
                     print("Index not available")
@@ -86,16 +85,15 @@ class RawDataC(object):
             self._b_class_is_updated = True
 
     def _update_array_data(self):
-        _logger.info("update array")
-        raw_data_class = self._xy_array
-
         if not self._b_array_is_updated:
-            self.x_array = []
-            self.y_array = []
+            _logger.info("update array")
+            raw_data_class = self._xy_array
+            self._x_array = []
+            self._y_array = []
             i = 0
             for item in raw_data_class:
-                self.x_array = np.append(self.x_array, item.x)
-                self.y_array = np.append(self.y_array, item.y)
+                self._x_array = np.append(self._x_array, item.x)
+                self._y_array = np.append(self._y_array, item.y)
 
             self._b_array_is_updated = True
 
