@@ -33,7 +33,7 @@ def setup_files():
         open(file_create_name, 'a').close()
 
     yield
-    shutil.rmtree(dest_folder)
+
     print("\nEnd--------------------")
 
 
@@ -43,6 +43,16 @@ def test_set_src_folder():
     sc = garminmanager.utils.FileManagerC.FilemManagerC(loglevel=logging.DEBUG)
     sc.set_src_folder(src_folder)
     assert src_folder == sc._src
+
+def test_process_get_file_list(setup_files):
+    sc = garminmanager.utils.FileManagerC.FilemManagerC(loglevel=logging.DEBUG)
+    sc.process_get_file_list(name_of_tst_folder[0])
+    file_list = sc.get_file_list()
+
+    org_list = []
+    for item in test_names[0:3]:
+        org_list.append(name_of_tst_folder[0] + "/" + item)
+    assert file_list == org_list
 
 
 def test_set_dst_folder():
@@ -75,6 +85,7 @@ def test_move(setup_files):
     sc.move()
     assert check_files()
     sc.print_file_list()
+    shutil.rmtree(dest_folder)
 
 
 def check_files():
@@ -100,3 +111,4 @@ def test_copy(setup_files):
         if not full_file == my_file_list[i]:
             assert False
         i = i + 1
+    shutil.rmtree(dest_folder)

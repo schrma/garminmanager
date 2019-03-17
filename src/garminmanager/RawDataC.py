@@ -29,6 +29,9 @@ class RawDataC(object):
     def set_data_type(self,my_type):
         self._process_type = my_type
 
+    def get_data_type(self):
+        return self._process_type
+
     def add_x(self, x):
         self._b_class_is_updated = False
         a = self.x_array
@@ -49,6 +52,14 @@ class RawDataC(object):
         a = np.append(a,m)
         self._xy_array = a
         self._update_array_data()
+
+    def get_x(self):
+        self._update_array_data()
+        return self.x_array
+
+    def get_y(self):
+        self._update_array_data()
+        return self.y_array
 
     def _update_class_data(self):
         if not self._b_class_is_updated:
@@ -111,29 +122,6 @@ class RawDataC(object):
             except IndexError:
                 print("Index not available")
 
-    def add_spaces(self,spaces):
-        str_spaces = ""
-        for i in range(spaces):
-            str_spaces += " "
-        return str_spaces
-
-    def encode_to_json(self,space_offset=0):
-        self._update_class_data()
-        sp = space_offset
-        json_string = self.add_spaces(2+sp) + "\"_xy_array\" : [\n" + self.add_spaces(4+sp)
-        i = 0
-        for item in self._xy_array:
-            if i == 0:
-                pass
-            else:
-                json_string += ",\n" + self.add_spaces(4+sp)
-            json_string += item.encode_to_json()
-            i += 1
-        json_string += "\n" + self.add_spaces(2+sp) + "]\n}"
-
-        json_string += self.add_spaces(2+sp) + "\"process_type\" : " + str(self._process_type)
-        json_string += self.add_spaces(2 + sp) + "\"date\" : " + str(self._process_type)
-        return json_string
 
 
 

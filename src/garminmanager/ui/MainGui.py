@@ -45,13 +45,15 @@ class MainWindow(Ui_MainWindow):
         self._Dialog = Dialog
         self._DialogInterface = DialogInterface
         self._settings = {"watch_folder": "d:/GARMIN",
-                    "fit_folder": "c:/Users/schrma/ownCloud/leica/fitfolder",
+                    "activity_folder": "c:/Users/schrma/ownCloud/leica/fitfolder",
+                    "activity_folder": "c:/Users/schrma/ownCloud/leica/fitfolder",
+                    "json_folder": "c:/Users/schrma/ownCloud/leica/fitfolder",
                     "backup_folder": "c:/Users/schrma/ownCloud/leica/fitfolder/backup"}
         self._file_list_fit = []
 
     def PrepareApplication(self):
-        # with open("./src/garminmanager/settings.json", 'r') as read_file:
-        #     self._settings = json.load(read_file)
+        with open("./settings.json", 'r') as read_file:
+            self._settings = json.load(read_file)
         self._show_text_tb()
 
 
@@ -61,21 +63,25 @@ class MainWindow(Ui_MainWindow):
     def _show_text_tb(self):
         try:
             self.text_tb.clear()
-            self.text_tb.append("Watch Folder:")
-            self.text_tb.append(self._settings["watch_folder"])
-            self.text_tb.append("FitDstFolder:")
-            self.text_tb.append(self._settings["fit_folder"])
+            self.text_tb.append("Monitor folder:")
+            self.text_tb.append(self._settings["monitor_folder"])
+            self.text_tb.append("Activity folder:")
+            self.text_tb.append(self._settings["activity_folder"])
             self.text_tb.append("BackupFolder:")
             self.text_tb.append(self._settings["backup_folder"])
+            self.text_tb.append("Watch Folder:")
+            self.text_tb.append(self._settings["watch_folder"])
+            self.text_tb.append("Json Folder:")
+            self.text_tb.append(self._settings["json_folder"])
         except:
             pass
 
     def register_signals(self,MainWindow):
 
-        self.test_pb.clicked.connect(self.transfer_to_database)
+        self.test_pb.clicked.connect(self.fit_to_database)
         self.mProcessPB.clicked.connect(self.ProcessHeartrate)
         self.ParseToFileButton.clicked.connect(self.ParseAndWrite)
-        self.backup_pb.clicked.connect(self.BackupData)
+        self.backup_pb.clicked.connect(self.backup_data)
         self.data_from_watch_pb.clicked.connect(self.get_data_from_watch)
         self.actionVersion.triggered.connect(self.TestFunction)
         self.save_settings_pb.clicked.connect(self.save_settings)
@@ -127,12 +133,16 @@ class MainWindow(Ui_MainWindow):
         selected_folder = self._get_folder()
         selected_index =  self.folder_cb.currentIndex()
 
-        if selected_index == 2:
-            self._settings["watch_folder"] = selected_folder
-        elif selected_index == 0:
-            self._settings["fit_folder"] = selected_folder
+        if selected_index == 0:
+            self._settings["monitor_folder"] = selected_folder
         elif selected_index == 1:
+            self._settings["activity_folder"] = selected_folder
+        elif selected_index == 2:
             self._settings["backup_folder"] = selected_folder
+        elif selected_index == 3:
+            self._settings["watch_folder"] = selected_folder
+        elif selected_index == 4:
+            self._settings["json_folder"] = selected_folder
         else:
             _logger.error("Index out of range: " + str(selected_index))
 
@@ -145,18 +155,42 @@ class MainWindow(Ui_MainWindow):
         file_handler = garminmanager.utils.FileManagerC.FilemManagerC()
         src_folder = self._settings["watch_folder"] + "/ACTIVITY"
         file_handler.set_src_folder(src_folder)
-        dest_folder = self._settings["fit_folder"] + "/GarminWatch/MyActivities"
+        dest_folder = self._settings["activity_folder"]
         file_handler.set_dst_folder(dest_folder)
         file_handler.copy()
         src_folder = self._settings["watch_folder"] + "/MONITOR"
         file_handler.set_src_folder(src_folder)
-        dest_folder = self._settings["fit_folder"] + "/GarminWatch/Monitor"
+        dest_folder = self._settings["monitor_folder"]
         file_handler.copy()
 
         self._file_list_fit = file_handler.get_file_list()
 
     def fit_to_database(self):
-        pass
+
+        sc = garminmanager.utils.FileManagerC.FilemManagerC(loglevel=logging.DEBUG)
+        sc.process_get_file_list(self._settings["monitor_folder"])
+        file_list = sc.get_file_list()
+
+        # ParseData
+        fit_parser = garminmanager.FitParserC.FitParserC()
+        fit_parser.set_file_list(file_list)
+        fit_parser.set_type(EnumHealtTypeC.heartrate)
+        fit_parser.process()
+        raw_data = fit_parser.get_data()
+        datafilter = garminmanager.DataFilterC.DataFilerC()
+        datafilter.set_data(raw_data)
+        datafilter.set_time_range_in_hour(24)
+        try:
+            datafilter.process()
+        except:
+            _logger.warning("Problem with data filter")
+            return
+        raw_data_array = datafilter.get_data()
+
+        file_writer = garminmanager.utils.FileWriterC.FileWriterC()
+        file_writer.set_data(raw_data_array)
+        file_writer.set_folder(self._settings["json_folder"])
+        file_writer.write()
 
 
     def transfer_to_database(self):
@@ -199,46 +233,21 @@ class MainWindow(Ui_MainWindow):
     def TestFunction(self):
         self._Dialog.show()
 
-    def GetDataFromWatch(self):
-        src = self._settings["FitSourceFolder"] + "/ACTIVITY"
-        dst = self._settings["FitDstFolder"] + "/GarminWatch/MyActivities"
-        self.MoveFiles(src,dst)
-
-        src = self._settings["FitSourceFolder"] + "/MONITOR"
-        dst = self._settings["FitDstFolder"] + "/GarminWatch/Monitor"
-        self.MoveFiles(src,dst)
-
-
-    def BackupData(self):
+    def backup_data(self):
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        src = self._settings["fit_folder"] + "/GarminWatch"
-        dst = self._settings["watch_folder"] + "/" + timestr
-        self.Copytree(src,dst)
 
-    def CopyFilesWithSubfolder(self,src,dst):
-        if not os.path.exists(dst):
-            os.makedirs(dst)
-        for root, dirs, files in os.walk(src):  # replace the . with your starting directory
-            for file in files:
-                path_file = os.path.join(root, file)
-                shutil.copy2(path_file, dst)  # change you destination dir
+        file_handler = garminmanager.utils.FileManagerC.FilemManagerC()
 
-    def Copytree(self, src, dst, symlinks=False, ignore=None):
-        for item in os.listdir(src):
-            s = os.path.join(src, item)
-            d = os.path.join(dst, item)
-            if os.path.isdir(s):
-                shutil.copytree(s, d, symlinks, ignore)
-            else:
-                shutil.copy2(s, d)
-
-    def MoveFiles(self,src,dst):
-        if not os.path.exists(dst):
-            os.makedirs(dst)
-        for root, dirs, files in os.walk(src):  # replace the . with your starting directory
-            for file in files:
-                path_file = os.path.join(root, file)
-                shutil.move(path_file, dst)  # change you destination dir
+        file_handler = garminmanager.utils.FileManagerC.FilemManagerC()
+        src_folder = self._settings["activity_folder"]
+        file_handler.set_src_folder(src_folder)
+        dest_folder = self._settings["backup_folder"] + "/activity/" + timestr
+        file_handler.set_dst_folder(dest_folder)
+        file_handler.copy()
+        src_folder = self._settings["monitor_folder"]
+        file_handler.set_src_folder(src_folder)
+        dest_folder = self._settings["backup_folder"] + "/monitor/" + timestr
+        file_handler.copy()
 
     def PrintOverlay(self):
         filename = 'c:\\Users\\schrma\\Documents\\20190223-fit-all\\30731164854.fit'

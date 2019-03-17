@@ -167,7 +167,12 @@
       <widget class="QComboBox" name="folder_cb">
        <item>
         <property name="text">
-         <string>Fit Folder</string>
+         <string>Monitor Folder</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Activity Folder</string>
         </property>
        </item>
        <item>
@@ -178,6 +183,11 @@
        <item>
         <property name="text">
          <string>Watch Folder</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Json Folder</string>
         </property>
        </item>
       </widget>

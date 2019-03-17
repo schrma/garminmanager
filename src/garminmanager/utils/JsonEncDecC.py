@@ -66,6 +66,8 @@ class JsonEncDecC:
         raw_data._update_class_data()
         sp = 0
         json_string = self.add_spaces(2 + sp) + "\"" + self.CLASS_TYPE_TAG + "\" : \"" + type(raw_data).__module__ + type(raw_data).__name__ + "\",\n"
+        json_string += self.add_spaces(2 + sp) + "\"process_type\" : \"" + str(raw_data._process_type) + "\",\n"
+        json_string += self.add_spaces(2 + sp) + "\"date\" : \"" + str(raw_data.x_array[0]) + "\"\n"
         json_string += self.add_spaces(2 + sp) + "\"_xy_array\" : [\n" + self.add_spaces(4 + sp)
         i = 0
         for item in raw_data._xy_array:
@@ -77,8 +79,7 @@ class JsonEncDecC:
             i += 1
         json_string += "\n" + self.add_spaces(2 + sp) + "],\n"
 
-        json_string += self.add_spaces(2 + sp) + "\"process_type\" : \"" + str(raw_data._process_type) + "\",\n"
-        json_string += self.add_spaces(2 + sp) + "\"date\" : \"" + str(raw_data.x_array[0]) + "\"\n"
+
         return json_string
 
     def _select_encoder(self,classtype):
