@@ -36,7 +36,10 @@ class JsonEncDecC:
 
         data = self._input_data
 
-        if data.x_array == [] or data.y_array == [] or data._process_type == []:
+        x = data.get_x
+        y = data.get_y
+
+        if x == [] or y == [] or data._process_type == []:
             _logger.error("Rawdata is empty")
             return ""
 
@@ -63,11 +66,12 @@ class JsonEncDecC:
 
     def _encode_raw_data(self):
         raw_data = self._input_data
+        x = raw_data.get_x()
         raw_data._update_class_data()
         sp = 0
         json_string = self.add_spaces(2 + sp) + "\"" + self.CLASS_TYPE_TAG + "\" : \"" + type(raw_data).__module__ + type(raw_data).__name__ + "\",\n"
         json_string += self.add_spaces(2 + sp) + "\"process_type\" : \"" + str(raw_data._process_type) + "\",\n"
-        json_string += self.add_spaces(2 + sp) + "\"date\" : \"" + str(raw_data.x_array[0]) + "\",\n"
+        json_string += self.add_spaces(2 + sp) + "\"date\" : \"" + str(x[0]) + "\",\n"
         json_string += self.add_spaces(2 + sp) + "\"_xy_array\" : [\n" + self.add_spaces(4 + sp)
         i = 0
         for item in raw_data._xy_array:

@@ -26,10 +26,11 @@ class DataFilerC:
         self._time_range_hour = my_range
 
     def process(self):
-        if self._raw_data.x_array == []:
+        x = self._raw_data.get_x()
+        if x == []:
             _logger.warning("raw data is empty ...")
             return
-        first_date = self._raw_data.x_array[0]
+        first_date = x[0]
         my_range = self._time_range_hour
 
         start_point = self._get_starting_day(first_date)

@@ -32,13 +32,17 @@ class FileWriterC:
     def write(self):
 
         for raw_data in self._raw_data_array:
-            if raw_data.x_array == [] or raw_data.y_array == [] or raw_data._process_type == []:
+
+            x = raw_data.get_x()
+            y = raw_data.get_y()
+
+            if x == [] or y == [] or raw_data._process_type == []:
                 _logger.error("Rawdata is empty")
                 return
             json_enc_dec = garminmanager.utils.JsonEncDecC.JsonEncDecC()
             json_enc_dec.set_input_data(raw_data)
             json_string = json_enc_dec.encode()
-            filename = str(raw_data.x_array[0]).replace(" ", "_") + str(raw_data.x_array[-1]).replace(" ", "_") + ".json"
+            filename = str(x[0]).replace(" ", "_") + str(x[-1]).replace(" ", "_") + ".json"
             filename = filename.replace(":","-")
             filename = self._folder + "/" + filename
             self._full_filename = filename

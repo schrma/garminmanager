@@ -67,14 +67,18 @@ def test_update():
 
     i = 0
     for item in raw_data_class:
-        assert item.x == raw_data1.x_array[i]
-        assert item.y == raw_data1.y_array[i]
+        x = raw_data1.get_x()
+        y = raw_data1.get_y()
+        assert item.x == x[i]
+        assert item.y == y[i]
         i = i + 1
 
     raw_data1.add_xy(8,10)
     raw_data_class = raw_data1.get_xy_data()
     i = 0
     for item in raw_data_class:
-        assert item.x == raw_data1.x_array[i]
-        assert item.y == raw_data1.y_array[i]
+        x = raw_data1.get_x()
+        y = raw_data1.get_y()
+        assert item.x == x[i]
+        assert item.y == y[i]
         i = i + 1
