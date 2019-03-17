@@ -35,8 +35,8 @@ class DataFilerC:
         start_point = self._get_starting_day(first_date)
         end_point = start_point + datetime.timedelta(hours=my_range)
         temp_raw_data = garminmanager.RawDataC.RawDataC()
-        temp_raw_data.set_data_type(self._raw_data_array.get_data_type())
         raw_data_class = self._raw_data.get_xy_data()
+        temp_raw_data.set_data_type(self._raw_data.get_data_type())
         temp_raw_dataArray = []
         _logger.info("--------------------------" + str(start_point))
         for item in raw_data_class:
