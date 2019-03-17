@@ -18,6 +18,14 @@ from dateutil import tz
 import matplotlib.pylab as plt
 import json
 import shutil
+import garminmanager.utils.FileManagerC
+import garminmanager.FitParserC
+from garminmanager.enumerators.EnumHealthTypeC import EnumHealtTypeC
+import garminmanager.DataFilterC
+import garminmanager.utils.FileWriterC
+import logging
+
+_logger = logging.getLogger(__name__)
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -31,36 +39,48 @@ import mpl_toolkits.axisartist as AA
 class MainWindow(Ui_MainWindow):
 
     def __init__(self,Dialog,DialogInterface):
-        self._on_test_callback = None
+        _logger.setLevel(logging.DEBUG)
+        _logger.debug("Init: %s", os.path.basename(__file__))
         self._figure = []
         self._Dialog = Dialog
         self._DialogInterface = DialogInterface
-        self._settings = []
+        self._settings = {"watch_folder": "d:/GARMIN",
+                    "fit_folder": "c:/Users/schrma/ownCloud/leica/fitfolder",
+                    "backup_folder": "c:/Users/schrma/ownCloud/leica/fitfolder/backup"}
+        self._file_list_fit = []
 
     def PrepareApplication(self):
-        with open("settings.json", 'r') as read_file:
-            self._settings = json.load(read_file)
-        self.mTextTB.append("FitSourceFolder:")
-        self.mTextTB.append(self._settings["FitSourceFolder"])
-        self.mTextTB.append("FitDstFolder:")
-        self.mTextTB.append(self._settings["FitDstFolder"])
-        self.mTextTB.append("FitBackupFolder:")
-        self.mTextTB.append(self._settings["FitBackupFolder"])
+        # with open("./src/garminmanager/settings.json", 'r') as read_file:
+        #     self._settings = json.load(read_file)
+        self._show_text_tb()
+
 
         # Right place for image in label
-        self.labelMainPic.setPixmap(QtGui.QPixmap("./images/fenix3.jpg"))
+        self.label_fenix_pic.setPixmap(QtGui.QPixmap("./src/garminmanager/images/fenix3.jpg"))
 
-
+    def _show_text_tb(self):
+        try:
+            self.text_tb.clear()
+            self.text_tb.append("Watch Folder:")
+            self.text_tb.append(self._settings["watch_folder"])
+            self.text_tb.append("FitDstFolder:")
+            self.text_tb.append(self._settings["fit_folder"])
+            self.text_tb.append("BackupFolder:")
+            self.text_tb.append(self._settings["backup_folder"])
+        except:
+            pass
 
     def register_signals(self,MainWindow):
 
-        self.mTestPB.clicked.connect(self.PrintOverlay)
+        self.test_pb.clicked.connect(self.transfer_to_database)
         self.mProcessPB.clicked.connect(self.ProcessHeartrate)
         self.ParseToFileButton.clicked.connect(self.ParseAndWrite)
-        self.mBackupPB.clicked.connect(self.BackupData)
-        self.mGetDataFromWatchPB.clicked.connect(self.GetDataFromWatch)
+        self.backup_pb.clicked.connect(self.BackupData)
+        self.data_from_watch_pb.clicked.connect(self.get_data_from_watch)
         self.actionVersion.triggered.connect(self.TestFunction)
-
+        self.save_settings_pb.clicked.connect(self.save_settings)
+        self.load_settings_pb.clicked.connect(self.load_settings)
+        self.set_folders_pb.clicked.connect(self.set_folder)
 
 
         data = np.array([0.7, 0.7, 0.7, 0.8, 0.9, 0.9, 1.5, 1.5, 1.5, 1.5])
@@ -85,35 +105,81 @@ class MainWindow(Ui_MainWindow):
     def register_callback_on_submit(self, call_back):
         self._on_submit_callback = call_back
 
-    def TransferToDatabase(self):
-        fileHandler = FileHandlerC()
+    def load_settings(self):
+        _logger.info("load settings ...")
+        json_file = self._get_file()
+        with open(json_file, 'r') as read_file:
+            self._settings = json.load(read_file)
+        self._show_text_tb()
 
-        # Move activities
-        fileHandler.SetSrcFolder(self._settings["FitSourceFolder"] + "/ACTIVITY")
-        fileHandler.SetDstFolder(self._settings["FitDstFolder"] + "/GarminWatch/MyActivities")
-        fileHandler.Move()
+    def save_settings(self):
+        _logger.info("save settings")
+        current_path = os.getcwd()
+        filename = current_path + "/" + "settings.json"
+        self.statusbar.showMessage("Saved in " + filename)
+        with open(filename, "w") as write_file:
+            json.dump(self._settings, write_file)
 
-        # Copy monitor data
-        fileHandler.SetSrcFolder(self._settings["FitSourceFolder"] + "/ACTIVITY")
-        fileHandler.SetDstFolder(self._settings["FitDstFolder"] + "/GarminWatch/Monitor")
-        fileHandler.Copy()
-        fileList = fileHandler.GetFileList()
+    def set_folder(self):
+        _logger.info("set folder")
+        _logger.info("Folder: " + self.folder_cb.currentText())
+
+        selected_folder = self._get_folder()
+        selected_index =  self.folder_cb.currentIndex()
+
+        if selected_index == 2:
+            self._settings["watch_folder"] = selected_folder
+        elif selected_index == 0:
+            self._settings["fit_folder"] = selected_folder
+        elif selected_index == 1:
+            self._settings["backup_folder"] = selected_folder
+        else:
+            _logger.error("Index out of range: " + str(selected_index))
+
+        self._show_text_tb()
+
+
+    def get_data_from_watch(self):
+        file_handler = garminmanager.utils.FileManagerC.FilemManagerC()
+
+        file_handler = garminmanager.utils.FileManagerC.FilemManagerC()
+        src_folder = self._settings["watch_folder"] + "/ACTIVITY"
+        file_handler.set_src_folder(src_folder)
+        dest_folder = self._settings["fit_folder"] + "/GarminWatch/MyActivities"
+        file_handler.set_dst_folder(dest_folder)
+        file_handler.copy()
+        src_folder = self._settings["watch_folder"] + "/MONITOR"
+        file_handler.set_src_folder(src_folder)
+        dest_folder = self._settings["fit_folder"] + "/GarminWatch/Monitor"
+        file_handler.copy()
+
+        self._file_list_fit = file_handler.get_file_list()
+
+    def fit_to_database(self):
+        pass
+
+
+    def transfer_to_database(self):
+
+        self.get_data_from_watch()
 
         # ParseData
-        fitParser = FitParserC()
-        fitParser.SetFileList(fileList)
-        for itemType in listOfTypes:
-            fitParser.SetType(itemType)
-            rawData = fitParser.GetData()
-            dataFilter = DataFilterC(rawData)
-            filterDataArray = dataFilter.GetData()
-            fileWriter = FileWriter(filterDataArray,itemType)
-            fileWriter.SetOutputPath(jsonFolder)
-            fileWriter.SetIntervallInHour(24)
-            # Write last and first data as Name
-            # Write Version number
-            # Write Start
-            fileWriter.Write()
+        fit_parser = garminmanager.FitParserC.FitParserC()
+        fit_parser.set_file_list(self._file_list_fit)
+        fit_parser.set_type(EnumHealtTypeC.heartrate)
+        fit_parser.process()
+        raw_data = fit_parser.get_data()
+        datafilter = garminmanager.DataFilterC.DataFilerC()
+        datafilter.set_data(raw_data)
+        datafilter.set_time_range_in_hour(24)
+        datafilter.process()
+        raw_data_array = datafilter.get_data()
+
+        file_writer = garminmanager.utils.FileWriterC.FileWriterC()
+        file_writer.set_data(raw_data_array)
+        file_writer.set_folder("./writerTest")
+        file_writer.write()
+
 
     def ProcessHeartrate(self):
         generateData = GenerateData()
@@ -145,8 +211,8 @@ class MainWindow(Ui_MainWindow):
 
     def BackupData(self):
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        src = self._settings["FitDstFolder"] + "/GarminWatch"
-        dst = self._settings["FitBackupFolder"] + "/" + timestr
+        src = self._settings["fit_folder"] + "/GarminWatch"
+        dst = self._settings["watch_folder"] + "/" + timestr
         self.Copytree(src,dst)
 
     def CopyFilesWithSubfolder(self,src,dst):
@@ -344,7 +410,7 @@ class MainWindow(Ui_MainWindow):
         folder = dlg.getExistingDirectory()
         return folder
 
-    def _get_files(self):
+    def _get_file(self):
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
         dlg.setFilter(QDir.Files)
@@ -353,4 +419,4 @@ class MainWindow(Ui_MainWindow):
             file_names = dlg.selectedFiles()
         else:
             file_names = []
-        return file_names
+        return file_names[0]

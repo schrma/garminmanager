@@ -1,0 +1,3 @@
+c:\Python37\Scripts\pyuic5.exe -x c:\Users\schrma\Documents\python\garminmanager\src\garminmanager\ui\MainGui.ui -o c:\Users\schrma\Documents\python\garminmanager\src\garminmanager\ui\MainGui_auto.py
+c:\Python37\Scripts\pyuic5.exe -x c:\Users\schrma\Documents\python\garminmanager\src\garminmanager\ui\Version.ui -o c:\Users\schrma\Documents\python\garminmanager\src\garminmanager\ui\Version_auto.py
+pause

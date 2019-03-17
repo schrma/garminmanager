@@ -104,8 +104,8 @@ def main(args):
     myLevel = args.loglevel
     setup_logging(logging.WARNING)
 
-    f = garminmanager.utils.FileManagerC.FilemMangerC(myLevel)
-    m = garminmanager.FitParserC.FitParserC(myLevel)
+    #f = garminmanager.utils.FileManagerC.FilemMangerC(myLevel)
+    #m = garminmanager.FitParserC.FitParserC(myLevel)
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
