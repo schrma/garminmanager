@@ -2,6 +2,7 @@ import logging
 import os
 import json
 import datetime
+import numpy as np
 
 import garminmanager.RawDataC
 from garminmanager.enumerators.EnumHealthTypeC import EnumHealtTypeC
@@ -132,7 +133,11 @@ class JsonEncDecC:
         for m in value:
             for x,y in m.items():
                 conv_date = datetime.datetime.strptime(x,'%Y-%m-%d %H:%M:%S')
-                raw_data.add_xy(conv_date,y)
+                if y == "nan":
+                    raw_data.add_xy(conv_date,np.nan)
+                else:
+                    raw_data.add_xy(conv_date,y)
+
         self._output_data = raw_data
 
     def _fill_date(self,value):

@@ -13,7 +13,7 @@ def test_encode_decode():
     raw_data = garminmanager.RawDataC.RawDataC()
     my_dates1 = {
         datetime.datetime(2019,4,11,1,00) : 100,
-        datetime.datetime(2019,4,11,2,00) : 100,
+        datetime.datetime(2019,4,11,2,00) : np.nan,
         datetime.datetime(2019,4,11,3,00) : 100
             }
     for key, value in my_dates1.items():
@@ -33,4 +33,20 @@ def test_encode_decode():
     json_enc_dec.set_input_json(d)
     json_enc_dec.decode()
     raw_data_output = json_enc_dec.get_data()
+
+    x = raw_data_output.get_x()
+    y = raw_data_output.get_y()
+
+    org_x = raw_data.get_x()
+    org_y = raw_data.get_y()
+
+    y[np.isnan(y)] = -100
+    org_y[np.isnan(org_y)] = -100
+
+    y[np.isnan(y)] = -100
+    org_y[np.isnan(org_y)] = -100
+
+    raw_data.set_y(y)
+    raw_data_output.set_y(org_y)
+
     assert raw_data == raw_data_output

@@ -11,7 +11,11 @@ class xyC:
         self.y = []
 
     def encode_to_json(self):
-        return "{\"" + str(self.x) + "\": " + str(self.y) + "}"
+        if np.isnan(self.y):
+            tempString = "{\"" + str(self.x) + "\": " + "\"nan\"" + "}"
+        else:
+            tempString =  "{\"" + str(self.x) + "\": " + str(self.y) + "}"
+        return tempString
 
 class RawDataC(object):
     def __init__(self,loglevel=logging.INFO):
@@ -36,6 +40,16 @@ class RawDataC(object):
 
     def get_data_type(self):
         return self._process_type
+
+    def set_x(self,x):
+        self._b_class_is_updated = False
+        self._update_array_data()
+        self._x_array = x
+
+    def set_y(self,y):
+        self._b_class_is_updated = False
+        self._update_array_data()
+        self._y_array = y
 
     def add_x(self, x):
         self._b_class_is_updated = False
