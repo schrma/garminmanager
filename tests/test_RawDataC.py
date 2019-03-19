@@ -61,6 +61,36 @@ def test_compare():
     raw_data2.set_data_type(EnumHealtTypeC.heartrate)
     assert (raw_data1 == raw_data2) == False
 
+def test_add_class():
+    raw_data1 = garminmanager.RawDataC.RawDataC()
+    raw_data1.add_x([1, 2, 3, 4, 5, 6, 7])
+    raw_data1.add_y([10, 20, 30, 40, 50, 60, 70])
+
+    raw_data2 = garminmanager.RawDataC.RawDataC()
+    raw_data2.add_x([8, 9, 10, 11, 12, 13, 14])
+    raw_data2.add_y([80, 90, 100, 110, 120, 130, 140])
+    raw_data1.set_data_type(EnumHealtTypeC.heartrate)
+    raw_data2.set_data_type(EnumHealtTypeC.heartrate)
+    raw_total = raw_data1 + raw_data2
+
+    x = raw_total.get_x()
+    y = raw_total.get_y()
+
+    xorg1 = raw_data1.get_x()
+    yorg1 = raw_data1.get_y()
+
+    for i, item in enumerate(xorg1):
+        assert item == x[i]
+        assert yorg1[i] == y[i]
+
+    xorg2 = raw_data2.get_x()
+    yorg2 = raw_data2.get_y()
+
+    for i, item in enumerate(xorg2):
+        my_offset = len(xorg1)
+        assert item == x[i+my_offset]
+        assert yorg2[i] == y[i+my_offset]
+
 def test_update():
     raw_data1 = garminmanager.RawDataC.RawDataC()
     raw_data1.add_x([1, 2, 3, 4, 5, 6, 7])
