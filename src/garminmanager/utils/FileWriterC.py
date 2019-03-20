@@ -1,8 +1,12 @@
 import logging
 import os
 import json
+import ntpath
+import datetime
 
 import garminmanager.RawDataC
+import garminmanager.utils.JsonEncDecC
+import garminmanager.utils.FileManagerC
 import garminmanager.utils.JsonEncDecC
 
 _logger = logging.getLogger(__name__)
@@ -16,6 +20,13 @@ class FileWriterC:
         self._raw_data_array = []
         self._text = []
         self._folder = []
+        self._start_date = []
+        self._end_date = []
+        self._full_filename = []
+
+    def set_intervall(self,start,stop):
+        self._start_date = start
+        self._end_date = stop
 
     def set_data(self,data):
         self._raw_data_array = data
@@ -28,6 +39,30 @@ class FileWriterC:
 
     def set_text(self,text):
         self._text = text
+
+    def read(self):
+        file_manager = garminmanager.utils.FileManagerC.FilemManagerC()
+        file_manager.process_get_file_list(self._folder)
+        file_list = file_manager.get_file_list()
+        file_list_intervall = []
+        json_enc_dec = garminmanager.utils.JsonEncDecC.JsonEncDecC()
+        for item in file_list:
+            filename = ntpath.basename(item)
+            datetime_file = datetime.datetime.strptime(filename[0:10], '%Y-%m-%d')
+            if datetime_file >= self._start_date and datetime_file <= self._end_date:
+                file_list_intervall.append(item)
+
+        raw_data_output = garminmanager.RawDataC.RawDataC()
+        for item in file_list_intervall:
+            self.set_filename(item)
+            d = self.read_json()
+            json_enc_dec.set_input_json(d)
+            json_enc_dec.decode()
+            raw_data_temp = json_enc_dec.get_data()
+            raw_data_output = raw_data_output + raw_data_temp
+
+        return raw_data_output
+
 
     def write(self):
 

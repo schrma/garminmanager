@@ -91,6 +91,18 @@ def test_add_class():
         assert item == x[i+my_offset]
         assert yorg2[i] == y[i+my_offset]
 
+    raw_data1 = garminmanager.RawDataC.RawDataC()
+    raw_total = raw_data1 + raw_data2
+
+    assert raw_data2 == raw_total
+
+
+    raw_total = raw_data2 + raw_data1
+
+    assert raw_data2 == raw_total
+
+
+
 def test_update():
     raw_data1 = garminmanager.RawDataC.RawDataC()
     raw_data1.add_x([1, 2, 3, 4, 5, 6, 7])

@@ -135,6 +135,15 @@ class RawDataC(object):
             return False
         return True
 
+    def check_data(self):
+        x = self.get_x()
+        y = self.get_y()
+
+        if len(x) == len(y):
+            return True
+        else:
+            return False
+
 
     def print_data(self):
         xarray = self.get_x()
@@ -146,6 +155,38 @@ class RawDataC(object):
                 i = i + 1
             except IndexError:
                 print("Index not available")
+
+    def __add__(self,other):
+
+        x = self.get_x()
+        y = self.get_y()
+
+        if x == []:
+            return other
+
+        ox = other.get_x()
+        oy = other.get_y()
+
+        if ox == []:
+            return self
+
+        m = RawDataC()
+
+        xnew = np.append(x,ox)
+        ynew = np.append(y,oy)
+
+        m.add_x(xnew)
+        m.add_y(ynew)
+
+        if m.check_data() == False:
+            _logger.warning("Check in __add__ failed")
+            return []
+
+        if self._process_type != other._process_type:
+            _logger.warning(str(self._process_type) + " is not " + str(other._process_type))
+            return []
+        m.set_data_type(self._process_type)
+        return m
 
 
 
