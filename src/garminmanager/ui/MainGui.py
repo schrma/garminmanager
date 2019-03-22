@@ -25,8 +25,10 @@ import garminmanager.DataFilterC
 import garminmanager.utils.FileWriterC
 import garminmanager.filter.SettingsFilterC
 import garminmanager.ui.PlotSettingsC
+import garminmanager.ui.PlotC
 import garminmanager.filter.CalculationFilterC
 import logging
+
 
 _logger = logging.getLogger(__name__)
 
@@ -54,7 +56,10 @@ class MainWindow(Ui_MainWindow):
                     "backup_folder": "c:/Users/schrma/ownCloud/leica/fitfolder/backup"}
         self._file_list_fit = []
         self.cal_filter_settings =  garminmanager.filter.SettingsFilterC.SettingsFilterC()
+        self.cal_filter_settings.min = 140
+        self.cal_filter_settings.max = 200
         self.plot_settings = garminmanager.ui.PlotSettingsC.PlotSettingsC()
+
 
     def PrepareApplication(self):
         with open("./settings.json", 'r') as read_file:
@@ -98,7 +103,7 @@ class MainWindow(Ui_MainWindow):
         data = np.array([0.7, 0.7, 0.7, 0.8, 0.9, 0.9, 1.5, 1.5, 1.5, 1.5])
         self._DialogInterface.labelPciture.setPixmap(QtGui.QPixmap("./images/fenix3.jpg"))
         self._DialogInterface.VersionLabel.setText("Version: 2.0.0")
-
+        #self._main_window = MainWindow
         self._start_date_time = self.start_de.dateTime().toPyDateTime()
         self._end_date_time = self.end_de.dateTime().toPyDateTime()
         # self._figure = plt.figure()
@@ -108,14 +113,13 @@ class MainWindow(Ui_MainWindow):
         # # plot
         # self.plotWidget = FigureCanvas(self._figure)
         layout = QtWidgets.QVBoxLayout(self.widget)
-        dynamic_canvas = FigureCanvas(Figure(figsize=(5, 3)))
-        self._dynamic_canvas = dynamic_canvas
-        #self._figuerHost = host_subplot(111,figure=dynamic_canvas.figure)
-        #self._figuerHost = host_subplot(111,figure=dynamic_canvas.figure,axes_class=AA.Axes)
-        layout.addWidget(dynamic_canvas)
-        MainWindow.addToolBar(QtCore.Qt.BottomToolBarArea,NavigationToolbar(dynamic_canvas, MainWindow))
-        self._dynamic_ax = dynamic_canvas.figure.subplots()
-        dynamic_canvas.figure.subplots_adjust(left=0.05 , bottom=0.3, right=0.9, top=0.9  , wspace=0, hspace=0)
+        self._plot_handle = garminmanager.ui.PlotC.PlotC(main_window=MainWindow, layout=layout)
+        # dynamic_canvas = FigureCanvas(Figure(figsize=(5, 3)))
+        # self._dynamic_canvas = dynamic_canvas
+        # self.layout.addWidget(dynamic_canvas)
+        # MainWindow.addToolBar(QtCore.Qt.BottomToolBarArea,NavigationToolbar(dynamic_canvas, MainWindow))
+        # self._dynamic_ax = dynamic_canvas.figure.subplots()
+        # dynamic_canvas.figure.subplots_adjust(left=0.05 , bottom=0.3, right=0.9, top=0.9  , wspace=0, hspace=0)
 
     def register_callback_on_submit(self, call_back):
         self._on_submit_callback = call_back
@@ -242,22 +246,22 @@ class MainWindow(Ui_MainWindow):
         calculation_filter.set_settings(self.cal_filter_settings)
         calculation_filter.process()
         self._raw_result = calculation_filter.get_output_data()
-        pass
 
-    def ProcessHeartrate(self):
-        generateData = GenerateData()
-        generatorSettings = GeneratorSettingsC()
-        generatorSettings.SetStartDateTime(startDateTime)
-        generatorSettings.SetEndDateTime(startDateTime)
-        generatorSettings.SetInput(inputFolder)
-        generateData.SetSettings(generatorSettings)
-        generateData.Process()
-        fitnessData = generateData.GetData()
-        statisticCalc = StatisticC(fitnessData)
-        statisticCalc.Calculate()
-        statisticData = statisticCalc.GetData()
-        plotData = PlotC(plotSettings,statisticData)
-        plotData.Plot()
+    def process(self):
+        self.prepare_data()
+        self.plot()
+
+    def plot(self):
+
+        self.plot_settings._title = 'Heartrate Chart'
+        self.plot_settings._y_limit = [0,255]
+
+        settings = self.plot_settings
+        my_plot = self._plot_handle
+        my_plot.clear()
+        my_plot.set_settings(settings)
+        my_plot.add_plot_data(self._raw_result.get_x(), self._raw_result.get_y(), "Yeahh...")
+        my_plot.show()
 
     def TestFunction(self):
         self._Dialog.show()
