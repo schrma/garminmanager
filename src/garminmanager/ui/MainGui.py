@@ -23,6 +23,9 @@ import garminmanager.FitParserC
 from garminmanager.enumerators.EnumHealthTypeC import EnumHealtTypeC
 import garminmanager.DataFilterC
 import garminmanager.utils.FileWriterC
+import garminmanager.filter.SettingsFilterC
+import garminmanager.ui.PlotSettingsC
+import garminmanager.filter.CalculationFilterC
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -50,6 +53,8 @@ class MainWindow(Ui_MainWindow):
                     "json_folder": "c:/Users/schrma/ownCloud/leica/fitfolder",
                     "backup_folder": "c:/Users/schrma/ownCloud/leica/fitfolder/backup"}
         self._file_list_fit = []
+        self.cal_filter_settings =  garminmanager.filter.SettingsFilterC.SettingsFilterC()
+        self.plot_settings = garminmanager.ui.PlotSettingsC.PlotSettingsC()
 
     def PrepareApplication(self):
         with open("./settings.json", 'r') as read_file:
@@ -87,11 +92,15 @@ class MainWindow(Ui_MainWindow):
         self.save_settings_pb.clicked.connect(self.save_settings)
         self.load_settings_pb.clicked.connect(self.load_settings)
         self.set_folders_pb.clicked.connect(self.set_folder)
-
+        self.start_de.dateChanged.connect(self.start_date_changed)
+        self.end_de.dateChanged.connect(self.end_date_changed)
 
         data = np.array([0.7, 0.7, 0.7, 0.8, 0.9, 0.9, 1.5, 1.5, 1.5, 1.5])
         self._DialogInterface.labelPciture.setPixmap(QtGui.QPixmap("./images/fenix3.jpg"))
         self._DialogInterface.VersionLabel.setText("Version: 2.0.0")
+
+        self._start_date_time = self.start_de.dateTime().toPyDateTime()
+        self._end_date_time = self.end_de.dateTime().toPyDateTime()
         # self._figure = plt.figure()
         # ax1 = self._figure.add_subplot(111)
         # bins = np.arange(0.6, 1.62, 0.02)
@@ -110,6 +119,12 @@ class MainWindow(Ui_MainWindow):
 
     def register_callback_on_submit(self, call_back):
         self._on_submit_callback = call_back
+
+    def start_date_changed(self):
+        self._start_date_time = self.start_de.dateTime().toPyDateTime()
+
+    def end_date_changed(self):
+        self._end_date_time = self.end_de.dateTime().toPyDateTime()
 
     def load_settings(self):
         _logger.info("load settings ...")
@@ -215,19 +230,19 @@ class MainWindow(Ui_MainWindow):
         file_writer.set_folder("./writerTest")
         file_writer.write()
 
-    def process(self):
+    def prepare_data(self):
         file_writer = garminmanager.utils.FileWriterC.FileWriterC()
-        start_time = self.start_de.dateTime().toPyDateTime()
-        end_time = self.end_de.dateTime().toPyDateTime()
-        file_writer.set_intervall(start_time,end_time)
+
+        file_writer.set_intervall(self._start_date_time,self._end_date_time)
         file_writer.set_folder(self._settings["json_folder"])
         raw_out = file_writer.read()
         calculation_filter = garminmanager.filter.CalculationFilterC.CalculationFilterC()
 
         calculation_filter.set_input_data(raw_out)
-        calculation_filter.set_settings(settings)
+        calculation_filter.set_settings(self.cal_filter_settings)
         calculation_filter.process()
-        raw_result = calculation_filter.get_output_data()
+        self._raw_result = calculation_filter.get_output_data()
+        pass
 
     def ProcessHeartrate(self):
         generateData = GenerateData()
