@@ -21,11 +21,11 @@ def test_process():
 
     my_dates = {datetime.datetime(2019,4,10,23,00) : 100,
                 datetime.datetime(2019,4,10,23,30) : 101,
-                datetime.datetime(2019,4,11,1,00) : 102,
-                datetime.datetime(2019,4,11,2,00) : 103,
+                datetime.datetime(2019,4,12,1,00) : 102,
+                datetime.datetime(2019,4,12,2,00) : 103,
                 datetime.datetime(2019,4,12,5,00) : 105,
-                datetime.datetime(2019,4,12,7,00) : 106,
-                datetime.datetime(2019,4,12,10,00) : 107}
+                datetime.datetime(2019,4,20,7,00) : 106,
+                datetime.datetime(2019,4,20,10,00) : 107}
 
     for key, value in my_dates.items():
         raw_data.add_x(key)
@@ -37,14 +37,19 @@ def test_process():
     raw_data_array = datafilter.get_data()
 
     compare_data = garminmanager.RawDataC.RawDataC()
-
-
-
     compare_data.add_xy(list(my_dates.keys())[0], np.array(list(my_dates.values())[0]))
     compare_data.add_xy(list(my_dates.keys())[1], np.array(list(my_dates.values())[1]))
 
     assert (compare_data == raw_data_array[0])
-
+    compare_data = garminmanager.RawDataC.RawDataC()
+    compare_data.add_xy(list(my_dates.keys())[2], np.array(list(my_dates.values())[2]))
+    compare_data.add_xy(list(my_dates.keys())[3], np.array(list(my_dates.values())[3]))
+    compare_data.add_xy(list(my_dates.keys())[4], np.array(list(my_dates.values())[4]))
+    assert (compare_data == raw_data_array[1])
+    compare_data = garminmanager.RawDataC.RawDataC()
+    compare_data.add_xy(list(my_dates.keys())[5], np.array(list(my_dates.values())[5]))
+    compare_data.add_xy(list(my_dates.keys())[6], np.array(list(my_dates.values())[6]))
+    assert (compare_data == raw_data_array[2])
 
 
 

@@ -58,7 +58,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="mProcessPB">
+        <widget class="QPushButton" name="process_pb">
          <property name="text">
           <string>Process</string>
          </property>
@@ -90,7 +90,7 @@
      <item row="0" column="3">
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
-        <widget class="QDateTimeEdit" name="dateTimeEdit"/>
+        <widget class="QDateTimeEdit" name="start_de"/>
        </item>
        <item row="1" column="1">
         <widget class="QLabel" name="label_2">
@@ -107,7 +107,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QDateTimeEdit" name="dateTimeEdit_2"/>
+        <widget class="QDateTimeEdit" name="end_de"/>
        </item>
       </layout>
      </item>
@@ -141,7 +141,7 @@
      <rect>
       <x>550</x>
       <y>50</y>
-      <width>338</width>
+      <width>340</width>
       <height>223</height>
      </rect>
     </property>

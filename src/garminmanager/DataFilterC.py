@@ -50,7 +50,8 @@ class DataFilerC:
                 temp_raw_data.set_data_type(self._raw_data.get_data_type())
                 temp_raw_data.add_xy(item.x, item.y)
                 _logger.info("--------------------------" + str(end_point))
-                end_point = end_point + datetime.timedelta(hours=my_range)
+
+                end_point = self._get_starting_day(item.x) + datetime.timedelta(hours=my_range)
 
         self._raw_data_array = np.append(temp_raw_dataArray, temp_raw_data)
 

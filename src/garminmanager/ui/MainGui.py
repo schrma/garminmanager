@@ -38,7 +38,7 @@ import mpl_toolkits.axisartist as AA
 
 class MainWindow(Ui_MainWindow):
 
-    def __init__(self,Dialog,DialogInterface):
+    def __init__(self,Dialog=[],DialogInterface=[]):
         _logger.setLevel(logging.DEBUG)
         _logger.debug("Init: %s", os.path.basename(__file__))
         self._figure = []
@@ -79,7 +79,7 @@ class MainWindow(Ui_MainWindow):
     def register_signals(self,MainWindow):
 
         self.test_pb.clicked.connect(self.fit_to_database)
-        self.mProcessPB.clicked.connect(self.ProcessHeartrate)
+        self.process_pb.clicked.connect(self.process)
         self.ParseToFileButton.clicked.connect(self.ParseAndWrite)
         self.backup_pb.clicked.connect(self.backup_data)
         self.data_from_watch_pb.clicked.connect(self.get_data_from_watch)
@@ -189,7 +189,8 @@ class MainWindow(Ui_MainWindow):
 
         file_writer = garminmanager.utils.FileWriterC.FileWriterC()
         file_writer.set_data(raw_data_array)
-        file_writer.set_folder(self._settings["json_folder"])
+        folder = self._settings["json_folder"] + "/" + str()
+        file_writer.set_folder(folder)
         file_writer.write()
 
 
@@ -214,6 +215,19 @@ class MainWindow(Ui_MainWindow):
         file_writer.set_folder("./writerTest")
         file_writer.write()
 
+    def process(self):
+        file_writer = garminmanager.utils.FileWriterC.FileWriterC()
+        start_time = self.start_de.dateTime().toPyDateTime()
+        end_time = self.end_de.dateTime().toPyDateTime()
+        file_writer.set_intervall(start_time,end_time)
+        file_writer.set_folder(self._settings["json_folder"])
+        raw_out = file_writer.read()
+        calculation_filter = garminmanager.filter.CalculationFilterC.CalculationFilterC()
+
+        calculation_filter.set_input_data(raw_out)
+        calculation_filter.set_settings(settings)
+        calculation_filter.process()
+        raw_result = calculation_filter.get_output_data()
 
     def ProcessHeartrate(self):
         generateData = GenerateData()

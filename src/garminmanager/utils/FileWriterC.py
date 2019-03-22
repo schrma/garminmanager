@@ -35,6 +35,8 @@ class FileWriterC:
         self._full_filename = name
 
     def set_folder(self,folder):
+        file_manger = garminmanager.utils.FileManagerC.FilemManagerC()
+        file_manger.create_folder(folder)
         self._folder = folder
 
     def set_text(self,text):
