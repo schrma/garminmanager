@@ -80,7 +80,7 @@ class FilemManagerC:
         for src_dir, dirs, files in os.walk(root_src_dir):
             dst_dir = src_dir.replace(root_src_dir, root_target_dir)
             if not os.path.exists(dst_dir):
-                os.mkdir(dst_dir)
+                os.makedirs(dst_dir)
             for file_ in files:
                 src_file = os.path.join(src_dir, file_)
                 dst_file = os.path.join(dst_dir, file_)

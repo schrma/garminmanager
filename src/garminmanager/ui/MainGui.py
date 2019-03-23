@@ -176,10 +176,11 @@ class MainWindow(Ui_MainWindow):
         file_handler.set_src_folder(src_folder)
         dest_folder = self._settings["activity_folder"]
         file_handler.set_dst_folder(dest_folder)
-        file_handler.copy()
+        file_handler.move()
         src_folder = self._settings["watch_folder"] + "/MONITOR"
         file_handler.set_src_folder(src_folder)
         dest_folder = self._settings["monitor_folder"]
+        file_handler.set_dst_folder(dest_folder)
         file_handler.copy()
 
         self._file_list_fit = file_handler.get_file_list()
@@ -274,12 +275,18 @@ class MainWindow(Ui_MainWindow):
         file_handler = garminmanager.utils.FileManagerC.FilemManagerC()
         src_folder = self._settings["activity_folder"]
         file_handler.set_src_folder(src_folder)
-        dest_folder = self._settings["backup_folder"] + "/activity/" + timestr
+        dest_folder = self._settings["backup_folder"] + "/" + timestr + "/activity/"
         file_handler.set_dst_folder(dest_folder)
         file_handler.copy()
         src_folder = self._settings["monitor_folder"]
         file_handler.set_src_folder(src_folder)
-        dest_folder = self._settings["backup_folder"] + "/monitor/" + timestr
+        dest_folder = self._settings["backup_folder"] + "/" + timestr + "/monitor/"
+        file_handler.set_dst_folder(dest_folder)
+        file_handler.copy()
+        src_folder = self._settings["json_folder"]
+        file_handler.set_src_folder(src_folder)
+        dest_folder = self._settings["backup_folder"] + "/" + timestr + "/json/"
+        file_handler.set_dst_folder(dest_folder)
         file_handler.copy()
 
     def PrintOverlay(self):
