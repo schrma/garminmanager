@@ -54,6 +54,38 @@ class FitParserC:
     def get_data(self):
         return self._raw_data
 
+    def _parse_single_file(self,filename):
+        fitfile = FitFile(filename)
+        data = ""
+        for record in fitfile.get_messages():
+
+            # Go through all the data entries in this record
+            for record_data in record:
+
+                # Print the records name and value (and units if it has any)
+                if record_data.units:
+                    # tempText = record_data.name + " " + record_data.value + " " + record_data.units
+                    data += "U->{0:s},{1:s}\n".format(record_data.name, str(record_data.value), str(record_data.units))
+                elif record_data.value:
+                    data += "V->{0:s},{1:s}\n".format(record_data.name, str(record_data.value))
+                else:
+                    data += "N->{0:s}\n".format(record_data.name)
+                    # f.write(tempText)k
+
+        return data
+
+    def parse_file(self):
+        filename_list = self._file_list
+        if not filename_list:
+            _logger.error("Filelist is empty")
+            return
+        data = ""
+        for filename in filename_list:
+            data += self._parse_single_file(filename)
+
+        return str(data)
+
+
     def _process_hearrate(self):
 
         filename_list = self._file_list

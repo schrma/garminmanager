@@ -1,6 +1,7 @@
 import logging
 import os
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -55,7 +56,6 @@ class PlotC:
     def clear(self):
         self._x_array = []
         self._y_array = []
-        self._ax
 
     def show(self):
 
@@ -66,7 +66,7 @@ class PlotC:
         self._ax.clear()
 
         for i, item in enumerate(self._x_array):
-            self._ax.plot(item, self._y_array[i], color=self.COLORS[i], label = self._label_array[i])
+            self._ax.plot(item, self._y_array[i], marker = "x", linestyle = 'None', color=self.COLORS[i], label = self._label_array[i])
 
         self._ax.legend()
         if self._settings._title != []:
@@ -84,6 +84,7 @@ class PlotC:
         if self._settings._y_label != []:
             self._ax.set_ylabel(self._settings._y_label)
 
+        self._ax.xaxis.set_major_formatter(mdates.DateFormatter('%a-%d-%Hh'))
         self._ax.grid(True)
 
         self._fig.canvas.draw()

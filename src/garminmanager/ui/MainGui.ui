@@ -97,9 +97,16 @@
            <minute>0</minute>
            <second>0</second>
            <year>2019</year>
-           <month>2</month>
-           <day>28</day>
+           <month>3</month>
+           <day>1</day>
           </datetime>
+         </property>
+         <property name="date">
+          <date>
+           <year>2019</year>
+           <month>3</month>
+           <day>1</day>
+          </date>
          </property>
         </widget>
        </item>
@@ -125,9 +132,16 @@
            <minute>0</minute>
            <second>0</second>
            <year>2019</year>
-           <month>2</month>
-           <day>28</day>
+           <month>3</month>
+           <day>2</day>
           </datetime>
+         </property>
+         <property name="date">
+          <date>
+           <year>2019</year>
+           <month>3</month>
+           <day>2</day>
+          </date>
          </property>
         </widget>
        </item>

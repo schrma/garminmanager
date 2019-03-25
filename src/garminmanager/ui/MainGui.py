@@ -56,7 +56,7 @@ class MainWindow(Ui_MainWindow):
                     "backup_folder": "c:/Users/schrma/ownCloud/leica/fitfolder/backup"}
         self._file_list_fit = []
         self.cal_filter_settings =  garminmanager.filter.SettingsFilterC.SettingsFilterC()
-        self.cal_filter_settings.min = 140
+        self.cal_filter_settings.min = 40
         self.cal_filter_settings.max = 200
         self.plot_settings = garminmanager.ui.PlotSettingsC.PlotSettingsC()
 
