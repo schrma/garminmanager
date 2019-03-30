@@ -14,13 +14,18 @@ def test_process():
                   ["timestamp", "2019-01-03 12:00:00","timestamp"],
                   ["activity_type", "walking","walking"],
                   ["distance", 1000.10,"walking"],
-                  ["duration_min", 953,"walking"],
-                  ["steps", 1500,"walking"],
+                  ["duration_min", 100,"walking"],
+                  ["steps", 10,"walking"],
+                  ["timestamp", "2019-01-03 13:00:00", "timestamp"],
+                  ["activity_type", "walking", "walking"],
+                  ["distance", 1000.20, "walking"],
+                  ["duration_min", 200, "walking"],
+                  ["steps", 20, "walking"],
                   ["timestamp", "2019-01-04 12:00:00","timestamp"],
                   ["activity_type", "running","running"],
                   ["distance", 2000.20,"running"],
-                  ["duration_min", 953,"running"],
-                  ["steps", 2500,"running"]]
+                  ["duration_min", 300,"running"],
+                  ["steps", 30,"running"]]
 
 
     record_array = []
@@ -35,7 +40,31 @@ def test_process():
     for i,item in enumerate(record_array):
         fitparser_steps._record = item
         fitparser_steps.run()
-        print(str(i) + " state: " + str(fitparser_steps.state) + " org_state: " + str(input_data[i][2]))
-        assert fitparser_steps.state == input_data[i][2]
+        input_name = input_data[i][0]
+        input_value = input_data[i][1]
+        state_org = str(input_data[i][2])
+        print(str(i) + " state: " + str(fitparser_steps.state) + " org_state: " + state_org)
+        assert fitparser_steps.state == state_org
 
-    pass
+        if input_name == "timestamp":
+            current_time_stamp = input_value
+
+        if input_name == "distance" and state_org == 'walking':
+            check_data(fitparser_steps._raw_data_walking_distance,current_time_stamp,input_value)
+
+        if input_name == "distance" and state_org == 'running':
+            check_data(fitparser_steps._raw_data_running_distance,current_time_stamp,input_value)
+
+        if input_name == "steps" and state_org == 'running':
+            check_data(fitparser_steps._raw_data_running_steps,current_time_stamp,input_value)
+
+        if input_name == "steps" and state_org == 'walking':
+            check_data(fitparser_steps._raw_data_walking_steps,current_time_stamp,input_value)
+
+
+
+def check_data(inputdata,current_time_stamp,value):
+    x = inputdata.get_x()
+    assert x[-1] == current_time_stamp
+    y = inputdata.get_y()
+    assert y[-1] == value
