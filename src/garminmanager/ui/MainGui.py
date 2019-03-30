@@ -5,7 +5,6 @@ from os import listdir
 from os.path import isfile, join
 
 from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtCore import QDir
 
 #from FitParserC import *
 #from myTypes.xyPairC import xyPairC
@@ -17,9 +16,8 @@ import numpy as np
 from dateutil import tz
 import matplotlib.pylab as plt
 import json
-import shutil
 import garminmanager.utils.FileManagerC
-import garminmanager.FitParserC
+import garminmanager.fitparser.FitParserC
 from garminmanager.enumerators.EnumHealthTypeC import EnumHealtTypeC
 import garminmanager.DataFilterC
 import garminmanager.utils.FileWriterC
@@ -32,14 +30,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-
-from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
-from matplotlib.figure import Figure
-
-from mpl_toolkits.axes_grid1 import host_subplot
-import mpl_toolkits.axisartist as AA
 
 class MainWindow(Ui_MainWindow):
 
@@ -90,7 +80,7 @@ class MainWindow(Ui_MainWindow):
 
         self.test_pb.clicked.connect(self.fit_to_database)
         self.process_pb.clicked.connect(self.process)
-        self.ParseToFileButton.clicked.connect(self.ParseAndWrite)
+        self.parse_pb.clicked.connect(self.parse_files)
         self.backup_pb.clicked.connect(self.backup_data)
         self.data_from_watch_pb.clicked.connect(self.get_data_from_watch)
         self.actionVersion.triggered.connect(self.TestFunction)
@@ -192,7 +182,7 @@ class MainWindow(Ui_MainWindow):
         file_list = sc.get_file_list()
 
         # ParseData
-        fit_parser = garminmanager.FitParserC.FitParserC()
+        fit_parser = garminmanager.fitparser.FitParserC.FitParserC()
         fit_parser.set_file_list(file_list)
         fit_parser.set_type(EnumHealtTypeC.heartrate)
         fit_parser.process()
@@ -219,7 +209,7 @@ class MainWindow(Ui_MainWindow):
         self.get_data_from_watch()
 
         # ParseData
-        fit_parser = garminmanager.FitParserC.FitParserC()
+        fit_parser = garminmanager.fitparser.FitParserC.FitParserC()
         fit_parser.set_file_list(self._file_list_fit)
         fit_parser.set_type(EnumHealtTypeC.heartrate)
         fit_parser.process()
@@ -414,6 +404,23 @@ class MainWindow(Ui_MainWindow):
         m.SetOuputName(outputNameFull)
         m.WriteToFileOverall()
 
+    def parse_files(self):
+        #myPattern = ['timestamp', 'activity_type', 'steps']
+        myPattern = ['steps','active_calories']
+        #myPattern = []
+        d = self._get_file()
+        fit_parser = garminmanager.fitparser.FitParserC.FitParserC()
+        fit_parser.set_file_list(d)
+        data = fit_parser.parse_file(myPattern)
+        file_writer = garminmanager.utils.FileWriterC.FileWriterC()
+        file_writer.set_text(data)
+        current_path = os.getcwd()
+        filename = current_path + "/" + "stepsfit.txt"
+        self.statusbar.showMessage("Saved in " + filename)
+        file_writer.set_filename(filename)
+        file_writer.write_text_to_file()
+
+
     def ParseAndWrite(self):
         d = self._getFileList()
         #d = self._getFileList('c:\\Users\\schrma\\Documents\\20190223-1016-fit')
@@ -433,7 +440,7 @@ class MainWindow(Ui_MainWindow):
             m.WriteToFileSingle()
 
     def _on_file_dialog(self):
-        filenameList = self._get_files()
+        filenameList = self._get_file()
         if 0 < len(filenameList):
             for filename in filenameList:
                 print(filename)
@@ -460,12 +467,9 @@ class MainWindow(Ui_MainWindow):
         return folder
 
     def _get_file(self):
-        dlg = QFileDialog()
-        dlg.setFileMode(QFileDialog.AnyFile)
-        dlg.setFilter(QDir.Files)
+        filter = "TXT (*.txt);;PDF (*.pdf)"
+        file_name = QFileDialog()
+        file_name.setFileMode(QFileDialog.ExistingFiles)
+        file_names = file_name.getOpenFileNames()
 
-        if dlg.exec_():
-            file_names = dlg.selectedFiles()
-        else:
-            file_names = []
         return file_names[0]

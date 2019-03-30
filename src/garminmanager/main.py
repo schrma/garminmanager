@@ -19,10 +19,10 @@ Note: This skeleton file can be safely removed if not needed! Ok
 import argparse
 import sys
 import logging
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 
 from garminmanager import __version__
-import garminmanager.FitParserC
+import garminmanager.fitparser.FitParserC
 import garminmanager.ui
 import garminmanager.ui.Version_auto
 import garminmanager.ui.MainGui

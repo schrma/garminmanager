@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 
-import garminmanager.FitParserC
+import garminmanager.fitparser.FitParserC
 import garminmanager.utils.FileWriterC
 from garminmanager.enumerators.EnumHealthTypeC import EnumHealtTypeC
 
@@ -12,7 +12,7 @@ def test_process_hearrate():
     test_files = ['./tests/samples/30731164854.fit',
                   './tests/samples/30763371770.fit'
                   ]
-    fit_parser = garminmanager.FitParserC.FitParserC()
+    fit_parser = garminmanager.fitparser.FitParserC.FitParserC()
     fit_parser.set_file_list(test_files)
     fit_parser.set_type(EnumHealtTypeC.heartrate)
     fit_parser.process()
@@ -40,7 +40,7 @@ def test_parse_file():
     test_files = ['./tests/samples/30731164854.fit',
                   './tests/samples/30763371770.fit'
                   ]
-    fit_parser = garminmanager.FitParserC.FitParserC()
+    fit_parser = garminmanager.fitparser.FitParserC.FitParserC()
     fit_parser.set_file_list(test_files)
     data = fit_parser.parse_file()
 

@@ -65,9 +65,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="ParseToFileButton">
+        <widget class="QPushButton" name="parse_pb">
          <property name="text">
-          <string>ParseToFile</string>
+          <string>Parse</string>
          </property>
         </widget>
        </item>

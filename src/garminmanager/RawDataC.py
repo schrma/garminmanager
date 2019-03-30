@@ -17,13 +17,13 @@ class xyC:
             tempString =  "{\"" + str(self.x) + "\": " + str(self.y) + "}"
         return tempString
 
-class RawDataC(object):
-    def __init__(self,loglevel=logging.INFO):
+class RawDataC(object,):
+    def __init__(self,loglevel=logging.INFO,process_type=[] ):
         _logger.setLevel(loglevel)
         _logger.debug("Init: %s", os.path.basename(__file__))
         self._x_array = []
         self._y_array = []
-        self._process_type = []
+        self._process_type = process_type
         self._xy_array = []
         self._b_class_is_updated = True
         self._b_array_is_updated = True
