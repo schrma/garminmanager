@@ -2,6 +2,8 @@ import datetime
 import numpy as np
 import filecmp
 import datetime
+import os
+import pathlib
 
 import garminmanager.ui.MainGui
 import garminmanager.DataFilterC
@@ -12,20 +14,27 @@ from garminmanager.enumerators.EnumFilterTypeC import EnumFilterTypeC
 
 from garminmanager.xyC import xyC
 
+scriptpath = str(pathlib.Path(__file__).parent.absolute())
+monitor_folder = scriptpath + "/samples/"
+json_folder = scriptpath + "/to-delete/"
+
+
 def test_fit_to_database():
+
     gui = garminmanager.ui.MainGui.MainWindow()
-    gui._settings = {"monitor_folder": "./tests/samples",
-                     "json_folder" : "./tests/json"}
+    gui._settings = {"monitor_folder": monitor_folder,
+                     "json_folder": json_folder}
     gui.fit_to_database()
 
-    assert filecmp.cmp("./tests/samples/2019-02-23_00-00-002019-02-23_15-56-00.json","./tests/json/2019-02-23_00-00-002019-02-23_15-56-00.json")
-    assert filecmp.cmp("./tests/samples/2019-03-02_13-33-002019-03-02_17-11-00.json","./tests/json/2019-03-02_13-33-002019-03-02_17-11-00.json")
-    assert filecmp.cmp("./tests/samples/2019-03-04_19-11-002019-03-04_23-52-00.json","./tests/json/2019-03-04_19-11-002019-03-04_23-52-00.json")
+
+    assert filecmp.cmp(monitor_folder + "/2019-02-23_00-00-002019-02-23_15-56-00.json",json_folder + "/2019-02-23_00-00-002019-02-23_15-56-00.json")
+    assert filecmp.cmp(monitor_folder + "/2019-03-02_13-33-002019-03-02_17-11-00.json",json_folder + "/2019-03-02_13-33-002019-03-02_17-11-00.json")
+    assert filecmp.cmp(monitor_folder + "/2019-03-04_19-11-002019-03-04_23-52-00.json",json_folder + "2019-03-04_19-11-002019-03-04_23-52-00.json")
 
 def test_prepare_data():
     gui = garminmanager.ui.MainGui.MainWindow()
-    gui._settings = {"monitor_folder": "./tests/samples",
-                     "json_folder": "./tests/json"}
+    gui._settings = {"monitor_folder": monitor_folder,
+                     "json_folder": monitor_folder}
     # Settings
     gui.cal_filter_settings = garminmanager.filter.SettingsFilterC.SettingsFilterC()
     gui.cal_filter_settings.max = 80
@@ -37,10 +46,10 @@ def test_prepare_data():
     gui._end_date_time = datetime.datetime(2019,3,3,00,00)
     gui.prepare_data()
 
-    with open("test_prepare_data_MainGui.txt", "wb") as fp:  # Pickling
+    with open(json_folder + "prepare_data_MainGui.txt", "wb") as fp:  # Pickling
          pickle.dump(gui._raw_result, fp)
 
-    with open("./tests/samples/test_prepare_data_MainGui.txt", "rb") as fp:  # Unpickling
+    with open(json_folder + "prepare_data_MainGui.txt", "rb") as fp:  # Unpickling
         org_data = pickle.load(fp)
 
     x = gui._raw_result.get_x()

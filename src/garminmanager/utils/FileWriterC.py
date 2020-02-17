@@ -44,7 +44,7 @@ class FileWriterC:
 
     def read(self):
         file_manager = garminmanager.utils.FileManagerC.FilemManagerC()
-        file_manager.process_get_file_list(self._folder)
+        file_manager.process_get_file_list(self._folder,only_select_files_with_ending='.json')
         file_list = file_manager.get_file_list()
         file_list_intervall = []
         json_enc_dec = garminmanager.utils.JsonEncDecC.JsonEncDecC()

@@ -44,7 +44,7 @@ def test_parse_file():
     fit_parser.set_file_list(test_files)
     data = fit_parser.parse_file()
 
-    compare_file = "./tests/samples/test_parse_file_FitParser.txt"
+    compare_file = "./tests/samples/parse_file_FitParser.txt"
 
     with open(compare_file) as file:
         data_org = file.read()

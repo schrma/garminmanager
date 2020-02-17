@@ -13,7 +13,7 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-def test_qt():
+def mest_qt():
     print("STart")
 
     app = QtWidgets.QApplication(sys.argv)
@@ -65,7 +65,7 @@ def test_qt():
     # dynamic_canvas.figure.subplots_adjust(left=0.05, bottom=0.3, right=0.9, top=0.9, wspace=0, hspace=0)
     # sys.exit(app.exec_())
 
-def test_plot():
+def mtest_plot():
     my_plot = garminmanager.ui.PlotC.PlotC()
     settings = garminmanager.ui.PlotSettingsC.PlotSettingsC()
     settings._title = 'My Title 1'

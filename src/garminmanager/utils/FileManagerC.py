@@ -103,7 +103,7 @@ class FilemManagerC:
         if not os.path.exists(name):
             os.makedirs(name)
 
-    def process_get_file_list(self,mypath):
+    def process_get_file_list(self,mypath,only_select_files_with_ending=''):
 
         file_list = []
         for (dirpath, dirnames, filenames) in os.walk(mypath):
@@ -111,7 +111,11 @@ class FilemManagerC:
             break
 
         for item in file_list:
-            self._file_list.append(mypath + "/" + item)
+            if only_select_files_with_ending:
+                if item.endswith(only_select_files_with_ending):
+                    self._file_list.append(mypath + "/" + item)
+            else:
+                self._file_list.append(mypath + "/" + item)
 
     def get_file_list(self):
         return self._file_list

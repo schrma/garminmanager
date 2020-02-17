@@ -178,9 +178,11 @@ class MainWindow(Ui_MainWindow):
     def fit_to_database(self):
 
         sc = garminmanager.utils.FileManagerC.FilemManagerC(loglevel=logging.DEBUG)
+        print(self._settings["monitor_folder"])
         sc.process_get_file_list(self._settings["monitor_folder"])
         file_list = sc.get_file_list()
-
+        print(file_list)
+        print("8888888888888888888888888888888")
         # ParseData
         fit_parser = garminmanager.fitparser.FitParserC.FitParserC()
         fit_parser.set_file_list(file_list)
